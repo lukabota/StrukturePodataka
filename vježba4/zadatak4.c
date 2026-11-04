@@ -2,34 +2,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct _polin;
-typedef struct _polin* Pozicija;
-typedef struct _polin {
+struct _polinom;
+typedef struct _polinom* Pozicija;
+typedef struct _polinom {
     int koef;
     int eks;
     Pozicija next;
-} Polin;
+} Polinom;
 
-int Unesi(Pozicija head, int koef, int eks) {
-    if (koef == 0) return 0;
+int unos(Pozicija P, int k, int e) {
+    if (k == 0) return 0;
     
-    Pozicija novi = (Pozicija)malloc(sizeof(Polin));
+    Pozicija novi = (Pozicija)malloc(sizeof(Polinom));
     if (!novi) return -1;
-    novi->koef = koef;
-    novi->eks = eks;
+    novi->koef = k;
+    novi->eks = e;
     
-    Pozicija temp = head;
-    while (temp->next != NULL && temp->next->eks > eks) {
+    Pozicija temp = P;
+    while (temp->next != NULL && temp->next->eks > e) {
         temp = temp->next;
     }
     
-    if (temp->next != NULL && temp->next->eks == eks) {
-        temp->next->koef += koef;
+    if (temp->next != NULL && temp->next->eks == e) {
+        temp->next->koef += k;
         free(novi);
         if (temp->next->koef == 0) {
-            Pozicija zaBrisanje = temp->next;
-            temp->next = zaBrisanje->next;
-            free(zaBrisanje);
+            Pozicija obrisi = temp->next;
+            temp->next = obrisi->next;
+            free(obrisi);
         }
     } else {
         novi->next = temp->next;
@@ -38,38 +38,38 @@ int Unesi(Pozicija head, int koef, int eks) {
     return 0;
 }
 
-int Citaj(Pozicija head, char* filename) {
+int citaj(Pozicija P, char* filename) {
     FILE* f = fopen(filename, "r");
     if (!f) return -1;
     int k, e;
     while (fscanf(f, "%d %d", &k, &e) == 2) {
-        Unesi(head, k, e);
+        unos(P, k, e);
     }
     fclose(f);
     return 0;
 }
 
-int Zbroji(Pozicija P1, Pozicija P2, Pozicija R) {
+int zbroji(Pozicija P1, Pozicija P2, Pozicija R) {
     Pozicija t1 = P1->next;
     Pozicija t2 = P2->next;
     while (t1 != NULL) {
-        Unesi(R, t1->koef, t1->eks);
-        t1 = t1->next;
+    unos(R, t1->koef, t1->eks);
+    t1 = t1->next;
     }
     while (t2 != NULL) {
-        Unesi(R, t2->koef, t2->eks);
+        unos(R, t2->koef, t2->eks);
         t2 = t2->next;
     }
     return 0;
 }
 
-int Pomnozi(Pozicija P1, Pozicija P2, Pozicija R) {
-    Pozicija t1 = P1->next;
+int pomnozi(Pozicija P1, Pozicija P2, Pozicija R) {
+ Pozicija t1 = P1->next;
     while (t1 != NULL) {
-        Pozicija t2 = P2->next;
+    Pozicija t2 = P2->next;
         while (t2 != NULL) {
-            Unesi(R, t1->koef * t2->koef, t1->eks + t2->eks);
-            t2 = t2->next;
+        unos(R, t1->koef * t2->koef, t1->eks + t2->eks);
+        t2 = t2->next;
         }
         t1 = t1->next;
     }
